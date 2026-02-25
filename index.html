@@ -3,46 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Answer Control Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Answer Control Dashboard v3</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            background: #f5f7fa;
+            color: #333;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header h1 { margin: 0; font-size: 1.3rem; }
+        .header p { margin: 4px 0 0; opacity: 0.9; font-size: 0.85rem; }
+        .one-thing-banner {
+            background: #ffd93d;
+            color: #333;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .one-thing-label { font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+        .one-thing-content { flex: 1; font-size: 0.95rem; font-weight: 500; }
+        .one-thing-edit {
+            background: white; border: none; padding: 6px 12px; border-radius: 4px;
+            cursor: pointer; font-size: 0.8rem;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 16px; }
+        .card {
+            background: white; border-radius: 12px; padding: 20px;
+            margin-bottom: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .card-title {
+            font-size: 0.9rem; font-weight: 600; color: #666;
+            text-transform: uppercase; margin-bottom: 16px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .card-subtitle { font-size: 0.8rem; color: #888; text-transform: none; }
+        
+        /* Widgets Grid */
+        .widgets-grid {
+            display: grid; grid-template-columns: 1fr; gap: 16px;
+        }
+        @media (min-width: 900px) { .widgets-grid { grid-template-columns: repeat(2, 1fr); } }
+        .widget-card {
+            background: white; border-radius: 12px; padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .widget-card.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        /* Weather */
+        .weather-widget {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white; border-radius: 12px; padding: 20px; text-align: center;
+        }
+        .weather-location { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; }
+        .weather-temp { font-size: 3rem; font-weight: 700; }
+        .weather-condition { font-size: 0.9rem; opacity: 0.9; margin-bottom: 12px; }
+        .weather-forecast { display: flex; justify-content: space-around; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.2); }
+        .weather-day { text-align: center; }
+        .weather-day .day-name { font-size: 0.75rem; opacity: 0.8; }
+        .weather-day .day-temp { font-size: 1rem; font-weight: 600; }
+        
+        /* Calendar */
+        .calendar-widget iframe { width: 100%; border: none; border-radius: 8px; height: 350px; }
+        
+        /* Tasks */
+        .tasks-list { max-height: 300px; overflow-y: auto; }
+        .task-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px; background: #f8f9fa; border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        .task-checkbox { width: 20px; height: 20px; cursor: pointer; }
+        .task-title { font-weight: 500; font-size: 0.9rem; }
+        .task-title.done { text-decoration: line-through; opacity: 0.6; }
+        .task-due { font-size: 0.75rem; color: #666; }
+        
+        /* Gmail */
+        .gmail-thread {
+            border-radius: 8px; padding: 14px; margin-bottom: 10px;
+            border-left: 4px solid #dee2e6;
+        }
+        .gmail-thread.action-item {
+            background: #fff3cd; border-left-color: #ffc107;
+        }
+        .gmail-thread:hover {
+            background: #e9ecef; transition: background 0.2s;
+        }
+        .gmail-header {
+            display: flex; justify-content: space-between;
+            align-items: flex-start; margin-bottom: 6px;
+        }
+        .gmail-subject { font-weight: 600; font-size: 0.95rem; color: #333; }
+        .gmail-sender { font-size: 0.85rem; color: #444; margin-bottom: 4px; }
+        .gmail-body {
+            font-size: 0.8rem; color: #666; line-height: 1.4;
+            margin-bottom: 10px; display: -webkit-box;
+            -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .gmail-body.expanded {
+            -webkit-line-clamp: unset;
+        }
+        .gmail-time { font-size: 0.75rem; color: #888; white-space: nowrap; }
+        .gmail-actions { display: flex; gap: 8px; }
+        .gmail-btn {
+            text-decoration: none; padding: 8px 14px; border-radius: 6px;
+            font-size: 0.8rem; text-align: center; cursor: pointer; border: none;
+        }
+        .gmail-btn-primary { background: #667eea; color: white; }
+        .gmail-btn-secondary { background: #e9ecef; color: #495057; }
+        .action-badge {
+            color: #856404; background: #fff3cd;
+            padding: 2px 8px; border-radius: 4px;
+            font-size: 0.7rem; margin-left: 8px; font-weight: 600;
+        }
+        
+        /* System Status */
+        .system-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+        }
+        @media (min-width: 600px) { .system-grid { grid-template-columns: repeat(4, 1fr); } }
+        .system-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px; background: #f8f9fa; border-radius: 8px;
+        }
+        .system-icon {
+            width: 40px; height: 40px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; background: #d4edda;
+        }
+        .system-name { font-weight: 600; font-size: 0.85rem; }
+        .system-status { font-size: 0.75rem; color: #666; }
+        
+        /* Quick Stats */
+        .quick-stats {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+        }
+        @media (min-width: 600px) { .quick-stats { grid-template-columns: repeat(4, 1fr); } }
+        .stat-tile {
+            background: #f8f9fa; border-radius: 10px; padding: 16px; text-align: center;
+        }
+        .stat-tile .number {
+            font-size: 2rem; font-weight: 700; color: #667eea; display: block;
+        }
+        .stat-tile .label {
+            font-size: 0.7rem; color: #666; text-transform: uppercase; margin-top: 4px;
+        }
+        
+        /* Loading */
+        .loading {
+            text-align: center; padding: 40px; color: #666;
+        }
+        .spinner {
+            border: 3px solid #f3f3f3; border-top: 3px solid #667eea;
+            border-radius: 50%; width: 30px; height: 30px;
+            animation: spin 1s linear infinite; margin: 0 auto 10px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
 </head>
 <body>
     <div class="header">
         <h1>Answer Control Dashboard</h1>
-        <p>All systems operational</p>
+        <p>Meseeks Control Center • v3.0</p>
+    </div>
+    
+    <div class="one-thing-banner" id="one-thing">
+        <span class="one-thing-label">TODAY'S ONE THING</span>
+        <span class="one-thing-content" id="one-thing-text">Research BOX API for automation</span>
+        <button class="one-thing-edit" onclick="editOneThing()">✏️ Edit</button>
     </div>
     
     <div class="container">
-        <!-- One Thing Banner -->
-        <div class="one-thing-banner" id="one-thing">
-            <span class="one-thing-label">TODAY'S ONE THING</span>
-            <span class="one-thing-content" id="one-thing-text">Research BOX API for automation</span>
-            <button class="one-thing-edit" onclick="editOneThing()">✏️</button>
-        </div>
-        
-        <!-- Quick Stats -->
+        <!-- Quick Stats Row -->
         <div class="card">
-            <div class="card-title">Quick Stats</div>
+            <div class="card-title">At a Glance</div>
             <div class="quick-stats">
                 <div class="stat-tile">
-                    <span class="number" id="stat-tasks">5</span>
-                    <span class="label">Tasks</span>
-                    <span class="trend up">+2 today</span>
+                    <span class="number" id="stat-tasks">--</span>
+                    <span class="label">Open Tasks</span>
                 </div>
                 <div class="stat-tile">
-                    <span class="number" id="stat-emails">31</span>
-                    <span class="label">Emails</span>
-                    <span class="trend">today</span>
+                    <span class="number" id="stat-emails">--</span>
+                    <span class="label">Unread</span>
                 </div>
                 <div class="stat-tile">
-                    <span class="number" id="stat-learning">Day 1</span>
-                    <span class="label">Learning</span>
-                    <span class="trend">Backend</span>
+                    <span class="number" id="stat-temp">--°</span>
+                    <span class="label">Dallas</span>
                 </div>
                 <div class="stat-tile">
-                    <span class="number" style="color: #28a745;">$12</span>
-                    <span class="label">API Cost</span>
-                    <span class="trend down">saved $8</span>
+                    <span class="number" style="color: #28a745;">$--</span>
+                    <span class="label">Today</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Widgets Grid -->
+        <div class="widgets-grid">
+            
+            <!-- Weather Widget -->
+            <div class="widget-card">
+                <div class="card-title">☀️ Weather <span class="card-subtitle" id="weather-updated"></span></div>
+                <div class="weather-widget" id="weather-widget">
+                    <div class="weather-location">Dallas, TX</div>
+                    <div class="weather-temp" id="weather-temp">--°</div>
+                    <div class="weather-condition" id="weather-condition">Loading...</div>
+                    <div class="weather-forecast" id="weather-forecast"></div>
+                </div>
+            </div>
+            
+            <!-- Tasks Widget -->
+            <div class="widget-card">
+                <div class="card-title">✅ Tasks <span class="card-subtitle" id="tasks-updated"></span></div>
+                <div class="tasks-list" id="tasks-list">
+                    <div class="loading"><div class="spinner"></div>Loading tasks...</div>
+                </div>
+                <div style="margin-top: 12px; text-align: center;">
+                    <a href="https://tasks.google.com/" target="_blank" 
+                       style="color: #667eea; font-size: 0.85rem; text-decoration: none;">
+                       Open Google Tasks →
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Calendar Widget -->
+            <div class="widget-card">
+                <div class="card-title">📅 Calendar <span class="card-subtitle">Live from Google</span></div>
+                <div class="calendar-widget">
+                    <iframe src="https://calendar.google.com/calendar/embed?src=meseeksingram%40gmail.com&ctz=America%2FChicago&mode=AGENDA&showCalendars=0&showPrint=0&showTabs=0&showTz=0&showTitle=0"
+                            style="border: 0; height: 320px; width: 100%; border-radius: 8px;"
+                            frameborder="0" scrolling="no">
+                    </iframe>
+                </div>
+            </div>
+            
+            <!-- Gmail Widget -->
+            <div class="widget-card">
+                <div class="card-title">
+                    📧 Recent Emails
+                    <span class="card-subtitle" id="gmail-updated"></span>
+                </div>
+                <div id="gmail-list">
+                    <div class="loading"><div class="spinner"></div>Loading emails...</div>
+                </div>
+                <div style="margin-top: 12px; display: flex; gap: 8px;">
+                    <a href="https://mail.google.com" target="_blank"
+                       class="gmail-btn gmail-btn-primary" style="flex: 1;">
+                       Open Gmail
+                    </a>
+                    <button class="gmail-btn gmail-btn-secondary" onclick="refreshGmail()">
+                        ↻ Refresh
+                    </button>
                 </div>
             </div>
         </div>
@@ -52,74 +274,263 @@
             <div class="card-title">System Status</div>
             <div class="system-grid">
                 <div class="system-item">
-                    <div class="system-icon ok">✅</div>
+                    <div class="system-icon">✅</div>
                     <div class="system-info">
                         <div class="system-name">Gmail Classifier</div>
-                        <div class="system-status">Running • Last: 12:02 PM</div>
+                        <div class="system-status" id="classifier-status">Active</div>
                     </div>
                 </div>
                 <div class="system-item">
-                    <div class="system-icon ok">✅</div>
+                    <div class="system-icon">📁</div>
                     <div class="system-info">
-                        <div class="system-name">BOX Attachments</div>
-                        <div class="system-status">Daily 6 PM</div>
+                        <div class="system-name">BOX Detector</div>
+                        <div class="system-status">6 PM daily</div>
                     </div>
                 </div>
                 <div class="system-item">
-                    <div class="system-icon ok">📊</div>
+                    <div class="system-icon">📊</div>
                     <div class="system-info">
                         <div class="system-name">Morning Brief</div>
-                        <div class="system-status">6 AM • Solar + OpenClaw</div>
+                        <div class="system-status">6 AM daily</div>
                     </div>
                 </div>
                 <div class="system-item">
-                    <div class="system-icon ok">🧠</div>
+                    <div class="system-icon">🧠</div>
                     <div class="system-info">
-                        <div class="system-name">Overnight Thinking</div>
-                        <div class="system-status">2 AM → 7 AM report</div>
+                        <div class="system-name">Overnight</div>
+                        <div class="system-status">2 AM → 7 AM</div>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Tasks -->
-        <div class="card">
-            <div class="card-title">Tasks</div>
-            <div class="priority-tabs">
-                <button class="priority-tab active" onclick="filterTasks('all')">All <span class="count">5</span></button>
-                <button class="priority-tab" onclick="filterTasks('urgent')">Urgent</button>
-                <button class="priority-tab" onclick="filterTasks('today')">Today</button>
-                <button class="priority-tab" onclick="filterTasks('personal')">Personal</button>
-            </div>
-            <div class="task-list" id="task-list"></div>
         </div>
         
         <!-- Email Feedback -->
         <div class="card">
-            <div class="card-title">📧 Daily Email Feedback <span id="feedback-date">Feb 25</span></div>
-            <div class="email-summary">
-                <div class="email-stat action">
-                    <div class="count" id="email-action">0</div>
-                    <div class="label">Action</div>
-                </div>
-                <div class="email-stat maybe">
-                    <div class="count" id="email-maybe">0</div>
-                    <div class="label">Maybe</div>
-                </div>
-                <div class="email-stat skip">
-                    <div class="count" id="email-skip">31</div>
-                    <div class="label">Skipped</div>
-                </div>
+            <div class="card-title">
+                📋 Daily Classification Review
+                <span class="card-subtitle" id="feedback-date"></span>
             </div>
-            <div class="section-subtitle">Review for False Negatives</div>
-            <div class="email-list" id="email-feedback-list"></div>
-            <div class="batch-actions">
-                <button class="btn-primary" onclick="markAllCorrect()">All Correct ✅</button>
-                <button class="btn-secondary" onclick="refreshEmailData()">Refresh ↻</button>
-            </div>
+            <p style="color: #666; font-size: 0.85rem; margin-bottom: 16px;">
+                Review skipped emails to catch false negatives. Your feedback trains the classifier.
+            </p>
+            <div id="feedback-list"></div>
         </div>
     </div>
     
-    <script src="app.js"></script>
+    <script>
+        // ========== TODAY'S ONE THING ==========
+        function editOneThing() {
+            const current = document.getElementById('one-thing-text').textContent;
+            const updated = prompt("Today's One Thing:", current);
+            if (updated) {
+                document.getElementById('one-thing-text').textContent = updated;
+                localStorage.setItem('kyle_today_onething', updated);
+            }
+        }
+        
+        // ========== WEATHER ==========
+        async function loadWeather() {
+            try {
+                // Using Open-Meteo free API (no key)
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=32.78&longitude=-96.81&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=America%2FChicago');
+                const data = await res.json();
+                
+                // Current
+                document.getElementById('weather-temp').textContent = Math.round(data.current.temperature_2m) + '°';
+                document.getElementById('weather-condition').textContent = getWeatherDesc(data.current.weather_code);
+                document.getElementById('stat-temp').textContent = Math.round(data.current.temperature_2m) + '°';
+                document.getElementById('weather-updated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-US', {hour: 'numeric', minute: '2-digit'});
+                
+                // Forecast (next 3 days)
+                const forecast = document.getElementById('weather-forecast');
+                const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                forecast.innerHTML = data.daily.time.slice(1, 4).map((t, i) => {
+                    const date = new Date(t);
+                    const dayName = days[date.getDay()];
+                    const high = Math.round(data.daily.temperature_2m_max[i + 1]);
+                    const low = Math.round(data.daily.temperature_2m_min[i + 1]);
+                    return `<div class="weather-day"><div class="day-name">${dayName}</div><div class="day-temp">${high}°/${low}°</div></div>`;
+                }).join('');
+            } catch (e) {
+                document.getElementById('weather-condition').textContent = 'Unable to load';
+            }
+        }
+        
+        function getWeatherDesc(code) {
+            const codes = {
+                0: 'Clear', 1: 'Mostly clear', 2: 'Partly cloudy', 3: 'Cloudy',
+                45: 'Fog', 48: 'Fog', 51: 'Light drizzle', 53: 'Drizzle', 55: 'Heavy drizzle',
+                61: 'Light rain', 63: 'Rain', 65: 'Heavy rain', 71: 'Snow', 95: 'Thunderstorm'
+            };
+            return codes[code] || 'Unknown';
+        }
+        
+        // ========== TASKS ==========
+        function loadTasks() {
+            // Sample tasks - in production, fetch from Google Tasks API
+            const tasks = [
+                { id: 1, title: 'Research BOX API', due: 'Today', done: false, priority: 'high' },
+                { id: 2, title: 'Schedule structural engineer', due: 'This week', done: false, priority: 'medium' },
+                { id: 3, title: 'Shop home insurance', due: 'This weekend', done: false, priority: 'low' }
+            ];
+            
+            const container = document.getElementById('tasks-list');
+            container.innerHTML = tasks.map(t => `
+                <div class="task-item" data-id="${t.id}">
+                    <input type="checkbox" class="task-checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask(${t.id})">
+                    <div style="flex:1;">
+                        <div class="task-title ${t.done ? 'done' : ''}">${t.title}</div>
+                        <div class="task-due">${t.due}</div>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('stat-tasks').textContent = tasks.filter(t => !t.done).length;
+            document.getElementById('tasks-updated').textContent = 'Just now';
+        }
+        
+        function toggleTask(id) {
+            // In production: update Google Tasks
+            alert('Task ' + id + ' toggled (sync with Google Tasks coming)');
+        }
+        
+        // ========== GMAIL ==========
+        function loadGmail() {
+            // Sample data - in production, fetch from API
+            const threads = [
+                {
+                    threadId: '18e5a1',
+                    subject: 'FW: KPost + Propel updates',
+                    sender: 'Brad Culver',
+                    bodyPreview: 'Hello Kyle, Just wanted to share the latest on Propel pricing and availability for Q2 orders...',
+                    date: '2026-02-25T16:30:00Z',
+                    classification: 'skipped'
+                },
+                {
+                    threadId: '18e4b2',
+                    subject: 'Invoice #4521 - Simplicity Solar',
+                    sender: 'Simplicity Solar',
+                    bodyPreview: 'Please find attached the invoice for order #4521. Payment terms: Net 30...',
+                    date: '2026-02-25T15:15:00Z',
+                    classification: 'for_kyle'
+                },
+                {
+                    threadId: '18e3c3',
+                    subject: 'FW: Module Updates - March',
+                    sender: 'Dax',
+                    bodyPreview: 'Updated module availability for March delivery. JA Solar 545W back in stock...',
+                    date: '2026-02-25T14:45:00Z',
+                    classification: 'skipped'
+                }
+            ];
+            
+            renderGmailList(threads);
+            document.getElementById('gmail-updated').textContent = 'Just now';
+            document.getElementById('stat-emails').textContent = threads.length;
+        }
+        
+        function renderGmailList(threads) {
+            const container = document.getElementById('gmail-list');
+            container.innerHTML = threads.map(t => {
+                const time = formatTime(t.date);
+                const isAction = t.classification === 'for_kyle';
+                return `
+                    <div class="gmail-thread ${isAction ? 'action-item' : ''}">
+                        <div class="gmail-header">
+                            <div class="gmail-subject">${escapeHtml(t.subject)}</div>
+                            <span class="gmail-time">${time}</span>
+                        </div>
+                        <div class="gmail-sender">
+                            ${escapeHtml(t.sender.split('<')[0].trim())}
+                            ${isAction ? '<span class="action-badge">ACTION NEEDED</span>' : ''}
+                        </div>
+                        <div class="gmail-body">${escapeHtml(t.bodyPreview)}</div>
+                        <div class="gmail-actions">
+                            <a href="https://mail.google.com/mail/u/0/#inbox/${t.threadId}" 
+                               target="_blank" class="gmail-btn gmail-btn-primary">
+                               📧 Open in Gmail
+                            </a>
+                            ${isAction ? `
+                                <button class="gmail-btn gmail-btn-secondary" onclick="createTask('${t.threadId}')">
+                                    ➕ Create Task
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function refreshGmail() {
+            document.getElementById('gmail-list').innerHTML = '<div class="loading"><div class="spinner"></div>Refreshing...</div>';
+            setTimeout(loadGmail, 500);
+        }
+        
+        function createTask(threadId) {
+            alert('Task created from thread ' + threadId + ' (connect to Google Tasks API)');
+        }
+        
+        // ========== EMAIL FEEDBACK ==========
+        function loadEmailFeedback() {
+            const data = {
+                date: 'Wed, Feb 25',
+                stats: { for_kyle: 0, maybe: 0, skipped: 47 },
+                emails: [
+                    { id: '1', subject: 'FW: FranklinWH updates', time: '11:02', confidence: 95, action: 'skipped', category: 'supplier' },
+                    { id: '2', subject: 'FW: Credit Updates 2026', time: '10:15', confidence: 98, action: 'skipped', category: 'admin' }
+                ]
+            };
+            
+            document.getElementById('feedback-date').textContent = data.date;
+            const container = document.getElementById('feedback-list');
+            container.innerHTML = data.emails.map(e => `
+                <div class="email-thread" style="margin-bottom: 8px;">
+                    <div style="font-weight: 500; margin-bottom: 4px;">${escapeHtml(e.subject)}</div>
+                    <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px;">
+                        ${e.time} • ${e.category} • Confidence: ${e.confidence}%
+                    </div>
+                    <div class="gmail-actions">
+                        <button class="gmail-btn gmail-btn-correct" onclick="markFeedback('${e.id}', 'correct')">✅ Correct</button>
+                        <button class="gmail-btn gmail-btn-wrong" onclick="markFeedback('${e.id}', 'wrong')">❌ Misclassified</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function markFeedback(id, feedback) {
+            alert('Feedback: ' + feedback + ' for email ' + id + ' (sync with training data)');
+            // In production: Send to backend for model training
+        }
+        
+        // ========== UTILS ==========
+        function formatTime(dateStr) {
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diff = (now - date) / 1000 / 60;
+            
+            if (diff < 60) return Math.floor(diff) + 'm';
+            if (diff < 1440) return Math.floor(diff / 60) + 'h';
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // ========== INIT ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            loadWeather();
+            loadTasks();
+            loadGmail();
+            loadEmailFeedback();
+            
+            // Auto-refresh
+            setInterval(loadWeather, 300000); // Every 5 minutes
+            setInterval(loadGmail, 300000);
+        });
+    </script>
 </body>
 </html>
