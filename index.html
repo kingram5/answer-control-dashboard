@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Answer Control Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Answer Control Dashboard</h1>
+        <p>All systems operational</p>
+    </div>
+    
+    <div class="container">
+        <!-- One Thing Banner -->
+        <div class="one-thing-banner" id="one-thing">
+            <span class="one-thing-label">TODAY'S ONE THING</span>
+            <span class="one-thing-content" id="one-thing-text">Research BOX API for automation</span>
+            <button class="one-thing-edit" onclick="editOneThing()">✏️</button>
+        </div>
+        
+        <!-- Quick Stats -->
+        <div class="card">
+            <div class="card-title">Quick Stats</div>
+            <div class="quick-stats">
+                <div class="stat-tile">
+                    <span class="number" id="stat-tasks">5</span>
+                    <span class="label">Tasks</span>
+                    <span class="trend up">+2 today</span>
+                </div>
+                <div class="stat-tile">
+                    <span class="number" id="stat-emails">31</span>
+                    <span class="label">Emails</span>
+                    <span class="trend">today</span>
+                </div>
+                <div class="stat-tile">
+                    <span class="number" id="stat-learning">Day 1</span>
+                    <span class="label">Learning</span>
+                    <span class="trend">Backend</span>
+                </div>
+                <div class="stat-tile">
+                    <span class="number" style="color: #28a745;">$12</span>
+                    <span class="label">API Cost</span>
+                    <span class="trend down">saved $8</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- System Status -->
+        <div class="card">
+            <div class="card-title">System Status</div>
+            <div class="system-grid">
+                <div class="system-item">
+                    <div class="system-icon ok">✅</div>
+                    <div class="system-info">
+                        <div class="system-name">Gmail Classifier</div>
+                        <div class="system-status">Running • Last: 12:02 PM</div>
+                    </div>
+                </div>
+                <div class="system-item">
+                    <div class="system-icon ok">✅</div>
+                    <div class="system-info">
+                        <div class="system-name">BOX Attachments</div>
+                        <div class="system-status">Daily 6 PM</div>
+                    </div>
+                </div>
+                <div class="system-item">
+                    <div class="system-icon ok">📊</div>
+                    <div class="system-info">
+                        <div class="system-name">Morning Brief</div>
+                        <div class="system-status">6 AM • Solar + OpenClaw</div>
+                    </div>
+                </div>
+                <div class="system-item">
+                    <div class="system-icon ok">🧠</div>
+                    <div class="system-info">
+                        <div class="system-name">Overnight Thinking</div>
+                        <div class="system-status">2 AM → 7 AM report</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tasks -->
+        <div class="card">
+            <div class="card-title">Tasks</div>
+            <div class="priority-tabs">
+                <button class="priority-tab active" onclick="filterTasks('all')">All <span class="count">5</span></button>
+                <button class="priority-tab" onclick="filterTasks('urgent')">Urgent</button>
+                <button class="priority-tab" onclick="filterTasks('today')">Today</button>
+                <button class="priority-tab" onclick="filterTasks('personal')">Personal</button>
+            </div>
+            <div class="task-list" id="task-list"></div>
+        </div>
+        
+        <!-- Email Feedback -->
+        <div class="card">
+            <div class="card-title">📧 Daily Email Feedback <span id="feedback-date">Feb 25</span></div>
+            <div class="email-summary">
+                <div class="email-stat action">
+                    <div class="count" id="email-action">0</div>
+                    <div class="label">Action</div>
+                </div>
+                <div class="email-stat maybe">
+                    <div class="count" id="email-maybe">0</div>
+                    <div class="label">Maybe</div>
+                </div>
+                <div class="email-stat skip">
+                    <div class="count" id="email-skip">31</div>
+                    <div class="label">Skipped</div>
+                </div>
+            </div>
+            <div class="section-subtitle">Review for False Negatives</div>
+            <div class="email-list" id="email-feedback-list"></div>
+            <div class="batch-actions">
+                <button class="btn-primary" onclick="markAllCorrect()">All Correct ✅</button>
+                <button class="btn-secondary" onclick="refreshEmailData()">Refresh ↻</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

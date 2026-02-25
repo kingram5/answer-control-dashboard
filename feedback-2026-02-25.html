@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Email Feedback</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        h1 {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .date {
+            color: #666;
+            font-size: 0.85rem;
+        }
+        .stats {
+            display: flex;
+            gap: 8px;
+            margin: 16px 0;
+        }
+        .stat {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            font-size: 0.7rem;
+            color: #666;
+            text-transform: uppercase;
+        }
+        .email-item {
+            border-left: 3px solid #ddd;
+            padding: 12px;
+            margin-bottom: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .email-item.action { border-left-color: #28a745; }
+        .email-item.maybe { border-left-color: #ffc107; }
+        .email-item.skip { border-left-color: #6c757d; }
+        .email-subject {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+        }
+        .email-meta {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .buttons {
+            display: flex;
+            gap: 8px;
+        }
+        button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-correct {
+            background: #28a745;
+            color: white;
+        }
+        .btn-wrong {
+            background: #dc3545;
+            color: white;
+        }
+        .bottom-actions {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 16px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 12px;
+        }
+        .bottom-actions button {
+            flex: 1;
+            padding: 14px;
+            font-size: 0.9rem;
+        }
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        .btn-secondary {
+            background: #e9ecef;
+            color: #495057;
+        }
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 16px 0 12px;
+            padding-top: 16px;
+            border-top: 1px solid #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="card header">
+        <h1>📊 Daily Email Feedback</h1>
+        <p class="date">Wednesday, February 25, 2026</p>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number">12</div>
+                <div class="stat-label">Total</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" style="color: #28a745;">0</div>
+                <div class="stat-label">Action</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" style="color: #ffc107;">0</div>
+                <div class="stat-label">Maybe</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" style="color: #6c757d;">12</div>
+                <div class="stat-label">Skipped</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="section-title">Review These (Potential False Negatives)</div>
+    
+    
+    <div class="email-item skip" id="email-19c8ab0883db">
+        <div class="email-subject">1. FW: Credit Updates 2026</div>
+        <div class="email-meta">09:02 • Confidence: <span style="color: red;">0%</span> • unknown</div>
+        <div class="buttons">
+            <button class="btn-correct" onclick="markCorrect('19c8ab0883db')">✅ Correct</button>
+            <button class="btn-wrong" onclick="markWrong('19c8ab0883db')">❌ Wrong</button>
+        </div>
+    </div>
+
+    <div class="email-item skip" id="email-19c93d34e88b">
+        <div class="email-subject">2. FW: [Postmaster] Messages on hold for kyle.ingram@greentechr</div>
+        <div class="email-meta">07:04 • Confidence: <span style="color: red;">0%</span> • unknown</div>
+        <div class="buttons">
+            <button class="btn-correct" onclick="markCorrect('19c93d34e88b')">✅ Correct</button>
+            <button class="btn-wrong" onclick="markWrong('19c93d34e88b')">❌ Wrong</button>
+        </div>
+    </div>
+
+    <div class="email-item skip" id="email-19c9363651c6">
+        <div class="email-subject">3. FW: Solis at RE+ Houston</div>
+        <div class="email-meta">07:04 • Confidence: <span style="color: red;">0%</span> • unknown</div>
+        <div class="buttons">
+            <button class="btn-correct" onclick="markCorrect('19c9363651c6')">✅ Correct</button>
+            <button class="btn-wrong" onclick="markWrong('19c9363651c6')">❌ Wrong</button>
+        </div>
+    </div>
+
+    <div class="email-item skip" id="email-19c9346d7adc">
+        <div class="email-subject">4. FW: Reaction Daily Digest - Tuesday, February 24, 2026</div>
+        <div class="email-meta">07:04 • Confidence: <span style="color: red;">0%</span> • unknown</div>
+        <div class="buttons">
+            <button class="btn-correct" onclick="markCorrect('19c9346d7adc')">✅ Correct</button>
+            <button class="btn-wrong" onclick="markWrong('19c9346d7adc')">❌ Wrong</button>
+        </div>
+    </div>
+
+    <div class="email-item skip" id="email-19c94c15c9c5">
+        <div class="email-subject">5. Make your mark with Pro for 50% off</div>
+        <div class="email-meta">08:02 • Confidence: <span style="color: red;">0%</span> • unknown</div>
+        <div class="buttons">
+            <button class="btn-correct" onclick="markCorrect('19c94c15c9c5')">✅ Correct</button>
+            <button class="btn-wrong" onclick="markWrong('19c94c15c9c5')">❌ Wrong</button>
+        </div>
+    </div>
+
+    <div class="email-item skip" id="email-19c9519dcb41">
+        <div class="email-subject">6. FW: Solar Scouts Statement</div>
+        <div class="email-meta">09:02 • Confidence: <span style="color: red;">0%</span> • unknown</div>
+        <div class="buttons">
+            <button class="btn-correct" onclick="markCorrect('19c9519dcb41')">✅ Correct</button>
+            <button class="btn-wrong" onclick="markWrong('19c9519dcb41')">❌ Wrong</button>
+        </div>
+    </div>
+
+    <div class="email-item skip" id="email-19c9519d9c7a">
+        <div class="email-subject">7. FW: Simplicity Solar Statement</div>
+        <div class="email-meta">09:02 • Confidence: <span style="color: red;">0%</span> • unknown</div>
+        <div class="buttons">
+            <button class="btn-correct" onclick="markCorrect('19c9519d9c7a')">✅ Correct</button>
+            <button class="btn-wrong" onclick="markWrong('19c9519d9c7a')">❌ Wrong</button>
+        </div>
+    </div>
+
+    <div class="email-item skip" id="email-19c953027349">
+        <div class="email-subject">8. Embedding and Multi-modal models</div>
+        <div class="email-meta">10:02 • Confidence: <span style="color: red;">0%</span> • unknown</div>
+        <div class="buttons">
+            <button class="btn-correct" onclick="markCorrect('19c953027349')">✅ Correct</button>
+            <button class="btn-wrong" onclick="markWrong('19c953027349')">❌ Wrong</button>
+        </div>
+    </div>
+
+    <div class="email-item skip" id="email-19c9083b004e">
+        <div class="email-subject">9. FW: Propel + Domestic Content</div>
+        <div class="email-meta">10:02 • Confidence: <span style="color: red;">0%</span> • unknown</div>
+        <div class="buttons">
+            <button class="btn-correct" onclick="markCorrect('19c9083b004e')">✅ Correct</button>
+            <button class="btn-wrong" onclick="markWrong('19c9083b004e')">❌ Wrong</button>
+        </div>
+    </div>
+
+    <div class="email-item skip" id="email-19c951f6aafe">
+        <div class="email-subject">10. FW: EAGLE® ACB-261 Installer Training Returns — Reserve Your</div>
+        <div class="email-meta">10:02 • Confidence: <span style="color: red;">0%</span> • unknown</div>
+        <div class="buttons">
+            <button class="btn-correct" onclick="markCorrect('19c951f6aafe')">✅ Correct</button>
+            <button class="btn-wrong" onclick="markWrong('19c951f6aafe')">❌ Wrong</button>
+        </div>
+    </div>
+
+    <div class="email-item skip" id="email-19c9560df5d5">
+        <div class="email-subject">11. FW: Final Reminder: XGen + Fronius GEN24 Webinars</div>
+        <div class="email-meta">11:27 • Confidence: <span style="color: red;">0%</span> • unknown</div>
+        <div class="buttons">
+            <button class="btn-correct" onclick="markCorrect('19c9560df5d5')">✅ Correct</button>
+            <button class="btn-wrong" onclick="markWrong('19c9560df5d5')">❌ Wrong</button>
+        </div>
+    </div>
+
+    <div class="email-item skip" id="email-19c955f61282">
+        <div class="email-subject">12. FW: The Perfect BESS for your C&I projects in 2026</div>
+        <div class="email-meta">11:27 • Confidence: <span style="color: red;">0%</span> • unknown</div>
+        <div class="buttons">
+            <button class="btn-correct" onclick="markCorrect('19c955f61282')">✅ Correct</button>
+            <button class="btn-wrong" onclick="markWrong('19c955f61282')">❌ Wrong</button>
+        </div>
+    </div>
+
+    
+    <div style="height: 80px;"></div>
+    
+    <div class="bottom-actions">
+        <button class="btn-primary" onclick="submitAllCorrect()">All Correct ✅</button>
+        <button class="btn-secondary" onclick="showFullList()">Show Full List 📋</button>
+    </div>
+    
+    <script>
+        function markCorrect(id) {
+            console.log('Correct:', id);
+            document.getElementById(id).style.display = 'none';
+        }
+        
+        function markWrong(id, reason) {
+            console.log('Wrong:', id, reason);
+            document.getElementById(id).style.display = 'none';
+        }
+        
+        function submitAllCorrect() {
+            alert('All items marked correct!');
+        }
+        
+        function showFullList() {
+            alert('Full list view coming soon');
+        }
+    </script>
+</body>
+</html>

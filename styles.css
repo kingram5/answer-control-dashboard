@@ -1,0 +1,118 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    margin: 0;
+    background: #f5f7fa;
+    color: #333;
+}
+.header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.header h1 { margin: 0; font-size: 1.4rem; }
+.one-thing-banner {
+    background: #ffd93d;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.one-thing-label {
+    font-weight: 600;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+}
+.one-thing-content {
+    flex: 1;
+    font-weight: 500;
+}
+.one-thing-edit {
+    background: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 16px;
+}
+.card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.card-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+}
+.quick-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+@media (min-width: 600px) {
+    .quick-stats { grid-template-columns: repeat(4, 1fr); }
+}
+.stat-tile {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+}
+.stat-tile .number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #667eea;
+    display: block;
+}
+.stat-tile .label {
+    font-size: 0.7rem;
+    color: #666;
+    text-transform: uppercase;
+}
+.system-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+@media (min-width: 600px) {
+    .system-grid { grid-template-columns: repeat(4, 1fr); }
+}
+.system-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+.system-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    background: #d4edda;
+}
+.system-name {
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+.system-status {
+    font-size: 0.75rem;
+    color: #666;
+}

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Answer Control Dashboard v2</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .header {
+            background: rgba(255,255,255,0.95);
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header h1 { font-size: 1.4rem; color: #333; }
+        .header p { color: #666; font-size: 0.9rem; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .stats-row { display: flex; gap: 12px; margin-bottom: 16px; }
+        .stat-box {
+            flex: 1;
+            text-align: center;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .stat-box .number { font-size: 1.5rem; font-weight: bold; color: #667eea; display: block; }
+        .stat-box .label { font-size: 0.7rem; color: #666; text-transform: uppercase; }
+        .email-list { max-height: 400px; overflow-y: auto; margin-top: 16px; }
+        .email-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid #6c757d;
+        }
+        .email-item.action { border-left-color: #28a745; }
+        .email-item.low-confidence { border-left-color: #dc3545; }
+        .email-subject { font-weight: 600; color: #333; margin-bottom: 4px; }
+        .email-meta { font-size: 0.75rem; color: #666; margin-bottom: 8px; }
+        .email-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        .email-buttons button {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+        .btn-correct { background: #28a745; color: white; }
+        .btn-wrong { background: #dc3545; color: white; }
+        .batch-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e9ecef;
+        }
+        .batch-actions button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-secondary { background: #e9ecef; color: #495057; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🦾 Answer Control Dashboard</h1>
+        <p>All systems • Daily briefing • Feedback</p>
+    </div>
+    
+    <div class="container">
+        <!-- System Status -->
+        <div class="section">
+            <div class="section-title">📊 System Status</div>
+            <div class="stats-row">
+                <div class="stat-box">
+                    <span class="number">✅</span>
+                    <span class="label">Gmail Classifier</span>
+                </div>
+                <div class="stat-box">
+                    <span class="number">✅</span>
+                    <span class="label">BOX Detector</span>
+                </div>
+                <div class="stat-box">
+                    <span class="number">✅</span>
+                    <span class="label">Morning Brief</span>
+                </div>
+                <div class="stat-box">
+                    <span class="number">🧠</span>
+                    <span class="label">Overnight Thinking</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Daily Email Feedback -->
+        <div class="section">
+            <div class="section-title">📧 Daily Email Feedback — <span id="today-date">Feb 25</span></div>
+            
+            <div class="stats-row">
+                <div class="stat-box">
+                    <span class="number" id="total-count">31</span>
+                    <span class="label">Total</span>
+                </div>
+                <div class="stat-box">
+                    <span class="number" style="color: #28a745;" id="action-count">0</span>
+                    <span class="label">Action</span>
+                </div>
+                <div class="stat-box">
+                    <span class="number" style="color: #ffc107;">0</span>
+                    <span class="label">Maybe</span>
+                </div>
+                <div class="stat-box">
+                    <span class="number" style="color: #6c757d;">31</span>
+                    <span class="label">Skipped</span>
+                </div>
+            </div>
+            
+            <div class="section-title" style="font-size: 0.95rem;">Review Skipped Items (Catch False Negatives)</div>
+            
+            <div class="email-list" id="email-list">
+                <!-- Emails loaded from localStorage -->
+            </div>
+            
+            <div class="batch-actions">
+                <button class="btn-primary" onclick="markAllCorrect()">All Correct ✅</button>
+                <button class="btn-secondary" onclick="refreshData()">Refresh ↻</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Sample data - will be replaced by actual data from API
+        const sampleEmails = [
+            { id: '1', subject: 'FW: Simplicity Solar Statement', time: '11:02', confidence: 0, action: 'skipped', category: 'fyi' },
+            { id: '2', subject: 'FW: Credit Updates 2026', time: '11:02', confidence: 0, action: 'skipped', category: 'admin' },
+            { id: '3', subject: 'XGen + Fronius Webinars', time: '11:01', confidence: 0, action: 'skipped', category: 'newsletter' },
+            { id: '4', subject: 'FW: Propel + Domestic Content', time: '10:02', confidence: 0, action: 'skipped', category: 'update' },
+            { id: '5', subject: 'FW: EAGLE Installer Training', time: '10:02', confidence: 0, action: 'skipped', category: 'newsletter' }
+        ];
+        
+        function renderEmails() {
+            const list = document.getElementById('email-list');
+            const data = JSON.parse(localStorage.getItem('kyleEmailFeedback') || '{}');
+            const emails = data.emails || sampleEmails;
+            
+            list.innerHTML = emails.slice(0, 10).map(email => `
+                <div class="email-item ${email.confidence < 50 ? 'low-confidence' : ''}" id="email-${email.id}">
+                    <div class="email-subject">${email.subject}</div>
+                    <div class="email-meta">${email.time} • Confidence: ${email.confidence}% • ${email.category}</div>
+                    <div class="email-buttons">
+                        <button class="btn-correct" onclick="markCorrect('${email.id}')">✅ Correct</button>
+                        <button class="btn-wrong" onclick="markWrong('${email.id}')">❌ Wrong</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            if (emails.length > 10) {
+                list.innerHTML += `<div style="text-align:center;padding:20px;color:#
