@@ -3,472 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Answer Control Dashboard v4</title>
+    <title>Answer Control Dashboard v4 Live</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0a0a0f;
-            --bg-secondary: #111118;
-            --bg-tertiary: #1a1a24;
-            --text-primary: #e8e8ec;
-            --text-secondary: #6e6e78;
-            --accent-purple: #8b5cf6;
-            --accent-pink: #ec4899;
-            --accent-cyan: #06b6d4;
-            --glass-bg: rgba(255, 255, 255, 0.02);
-            --glass-border: rgba(255, 255, 255, 0.06);
-            --glow-purple: 0 0 40px rgba(139, 92, 246, 0.15);
-            --glow-hover: 0 0 60px rgba(139, 92, 246, 0.25);
+            --bg-primary: #0a0a0f;--bg-secondary: #111118;--bg-tertiary: #1a1a24;
+            --text-primary: #e8e8ec;--text-secondary: #6e6e78;
+            --accent-purple: #8b5cf6;--accent-pink: #ec4899;--accent-cyan: #06b6d4;
+            --glass-bg: rgba(255,255,255,0.02);--glass-border: rgba(255,255,255,0.06);
+            --glow-purple: 0 0 40px rgba(139,92,246,0.15);--glow-hover: 0 0 60px rgba(139,92,246,0.25);
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        
-        body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* Animated Background */
-        .bg-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(100px);
-            pointer-events: none;
-            z-index: 0;
-        }
-        .bg-orb-1 {
-            width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
-            top: -200px; right: -100px;
-            animation: float 20s ease-in-out infinite;
-        }
-        .bg-orb-2 {
-            width: 400px; height: 400px;
-            background: radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, transparent 70%);
-            bottom: -100px; left: -100px;
-            animation: float 15s ease-in-out infinite reverse;
-        }
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0); }
-            50% { transform: translate(30px, -30px); }
-        }
-
-        /* App Layout */
-        .app {
-            display: flex;
-            min-height: 100vh;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Sidebar - Icon-only by default, expands on hover */
-        .sidebar {
-            width: 72px;
-            background: var(--bg-secondary);
-            border-right: 1px solid var(--glass-border);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 24px 0;
-            position: fixed;
-            height: 100vh;
-            z-index: 100;
-            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .sidebar:hover { width: 220px; }
-        
-        .logo {
-            width: 44px; height: 44px;
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
-            border-radius: 14px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.3rem;
-            margin-bottom: 32px;
-            box-shadow: var(--glow-purple);
-            animation: pulse-glow 3s ease-in-out infinite;
-        }
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.3); }
-            50% { box-shadow: 0 0 60px rgba(139, 92, 246, 0.5); }
-        }
-
-        .nav {
-            display: flex; flex-direction: column; gap: 4px;
-            width: 100%; padding: 0 12px;
-        }
-        .nav-item {
-            display: flex; align-items: center; gap: 14px;
-            padding: 14px;
-            border-radius: 12px;
-            cursor: pointer;
-            color: var(--text-secondary);
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-        .nav-item::before {
-            content: ''; position: absolute;
-            inset: 0; border-radius: 12px;
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
-            opacity: 0; transition: opacity 0.3s ease;
-        }
-        .nav-item:hover::before { opacity: 0.1; }
-        .nav-item:hover { color: var(--text-primary); }
-        .nav-item.active::before { opacity: 1; }
-        .nav-item.active { color: white; }
-        .nav-item.active .nav-icon { transform: scale(1.1); }
-        .nav-icon { 
-            width: 24px; height: 24px; 
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.1rem; position: relative; z-index: 1;
-            transition: transform 0.2s ease;
-        }
-        .nav-label { 
-            font-size: 0.9rem; font-weight: 500;
-            opacity: 0; width: 0;
-            transition: all 0.3s ease;
-            white-space: nowrap;
-            position: relative; z-index: 1;
-        }
-        .sidebar:hover .nav-label { opacity: 1; width: auto; }
-
-        /* Main Content */
-        .main {
-            flex: 1; margin-left: 72px;
-            padding: 24px;
-            min-height: 100vh;
-            transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .sidebar:hover + .main { margin-left: 220px; }
-
-        /* Header */
-        .header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 28px; padding-bottom: 20px;
-            border-bottom: 1px solid var(--glass-border);
-        }
-        .header-title {
-            font-size: 1.8rem; font-weight: 700;
-            background: linear-gradient(135deg, #fff, var(--accent-purple));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .header-meta {
-            display: flex; gap: 12px; align-items: center;
-            color: var(--text-secondary); font-size: 0.85rem;
-        }
-        .status-dot {
-            width: 8px; height: 8px; border-radius: 50%;
-            background: #22c55e; box-shadow: 0 0 10px #22c55e;
-            animation: status-pulse 2s ease-in-out infinite;
-        }
-        @keyframes status-pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* One Thing Banner */
-        .banner {
-            background: linear-gradient(135deg, rgba(234, 179, 8, 0.1), rgba(234, 179, 8, 0.02));
-            border: 1px solid rgba(234, 179, 8, 0.2);
-            border-radius: 16px; padding: 20px 24px;
-            margin-bottom: 28px;
-            display: flex; align-items: center; gap: 16px;
-            position: relative; overflow: hidden;
-        }
-        .banner::before {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(90deg, transparent, rgba(234, 179, 8, 0.1), transparent);
-            transform: translateX(-100%);
-            animation: shimmer 4s infinite;
-        }
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(200%); }
-        }
-        .banner-label {
-            font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
-            color: #eab308; letter-spacing: 1px;
-        }
-        .banner-content {
-            flex: 1; font-size: 1.1rem; font-weight: 500;
-        }
-        .banner-edit {
-            background: rgba(234, 179, 8, 0.15);
-            border: 1px solid rgba(234, 179, 8, 0.3);
-            color: #eab308; padding: 8px 16px;
-            border-radius: 8px; cursor: pointer;
-            font-size: 0.8rem; font-weight: 500;
-            transition: all 0.2s ease;
-        }
-        .banner-edit:hover {
-            background: rgba(234, 179, 8, 0.25);
-            transform: scale(1.05);
-        }
-
-        /* Glass Cards */
-        .card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 24px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        .card::before {
-            content: ''; position: absolute; inset: 0;
-            border-radius: 20px;
-            padding: 1px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask-composite: exclude;
-            pointer-events: none;
-        }
-        .card:hover {
-            transform: translateY(-8px) scale(1.01);
-            box-shadow: var(--glow-hover);
-            border-color: rgba(139, 92, 246, 0.3);
-        }
-
-        /* Grid Layout */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-            gap: 24px;
-            margin-bottom: 28px;
-        }
-        @media (max-width: 768px) {
-            .grid { grid-template-columns: 1fr; }
-            .sidebar:hover { width: 72px; }
-            .sidebar:hover + .main { margin-left: 72px; }
-            .nav-label { display: none; }
-        }
-
-        .card-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px;
-        }
-        .card-title {
-            font-size: 0.8rem; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 1px;
-            color: var(--text-secondary);
-        }
-        .card-badge {
-            padding: 4px 12px; border-radius: 20px;
-            font-size: 0.75rem; font-weight: 600;
-            background: rgba(139, 92, 246, 0.2);
-            color: var(--accent-purple);
-        }
-
-        /* Weather Widget */
-        .weather-card {
-            background: linear-gradient(135deg, rgba(6,182,212,0.1), rgba(139,92,246,0.1));
-        }
-        .weather-main {
-            display: flex; flex-direction: column; align-items: center;
-            padding: 20px 0; text-align: center;
-        }
-        .weather-temp {
-            font-size: 5rem; font-weight: 700;
-            background: linear-gradient(135deg, #fff, #06b6d4);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            line-height: 1;
-        }
-        .weather-desc {
-            font-size: 1.1rem; color: var(--text-secondary);
-            margin-top: 8px;
-        }
-        .weather-location {
-            font-size: 0.9rem; color: var(--text-secondary);
-            margin-top: 4px;
-        }
-        .weather-forecast {
-            display: flex; justify-content: space-around;
-            margin-top: 24px; padding-top: 20px;
-            border-top: 1px solid var(--glass-border);
-        }
+        body { font-family: 'Inter',sans-serif;background: var(--bg-primary);color: var(--text-primary);min-height: 100vh;overflow-x: hidden; }
+        .bg-orb { position: fixed;border-radius: 50%;filter: blur(100px);pointer-events: none;z-index: 0; }
+        .bg-orb-1 { width: 500px;height: 500px;background: #667eea33;top: -200px;right: -100px;animation: float 20s ease-in-out infinite; }
+        .bg-orb-2 { width: 400px;height: 400px;background: #764ba233;bottom: -100px;left: -100px;animation: float 15s ease-in-out infinite reverse; }
+        @keyframes float { 0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)} }
+        .app { display: flex;min-height: 100vh;position: relative;z-index: 1; }
+        .sidebar { width: 72px;height: 100vh;position: fixed;background: var(--glass-bg);backdrop-filter: blur(20px);border-right: 1px solid var(--glass-border);display: flex;flex-direction: column;align-items: center;padding: 24px 0;z-index: 100;transition: width 0.3s ease; }
+        .sidebar:hover { width: 200px; }
+        .logo { width: 44px;height: 44px;border-radius: 14px;background: linear-gradient(135deg,var(--accent-purple),var(--accent-pink));display: flex;align-items: center;justify-content: center;font-size: 1.5rem;margin-bottom: 32px;box-shadow: var(--glow-purple);animation: pulse 3s ease-in-out infinite; }
+        @keyframes pulse { 0%,100%{box-shadow:0 0 40px rgba(139,92,246,0.3)}50%{box-shadow:0 0 60px rgba(139,92,246,0.5)} }
+        .nav-item { display: flex;align-items: center;gap: 16px;padding: 12px;margin: 4px 8px;border-radius: 12px;cursor: pointer;color: var(--text-secondary);position: relative;overflow: hidden;transition: all 0.3s ease; }
+        .nav-item.active { background: linear-gradient(135deg,var(--accent-purple),var(--accent-pink));color: white;box-shadow: var(--glow-purple); }
+        .nav-item:hover:not(.active) { background: rgba(255,255,255,0.05);color: var(--text-primary); }
+        .nav-label { opacity: 0;transition: opacity 0.2s;white-space: nowrap; }
+        .sidebar:hover .nav-label { opacity: 1; }
+        .main { flex: 1;margin-left: 72px;padding: 28px;transition: margin-left 0.3s ease; }
+        .sidebar:hover + .main { margin-left: 200px; }
+        .header { display: flex;justify-content: space-between;align-items: center;margin-bottom: 28px; }
+        .header h1 { font-size: 2rem;font-weight: 700;background: linear-gradient(135deg,#fff,var(--accent-purple));-webkit-background-clip: text;-webkit-text-fill-color: transparent; }
+        .live-badge { display: flex;align-items: center;gap: 8px;padding: 6px 12px;background: rgba(34,197,94,0.15);border-radius: 20px;font-size: 0.75rem;color: #22c55e; }
+        .live-dot { width: 6px;height: 6px;border-radius: 50%;background: #22c55e;animation: blink 2s infinite; }
+        @keyframes blink { 0%,100%{opacity:1}50%{opacity:0.3} }
+        .banner { background: linear-gradient(135deg,#eab30820,#eab30810);border: 1px solid #eab30840;border-radius: 16px;padding: 20px 24px;margin-bottom: 28px;display: flex;align-items: center;gap: 16px; }
+        .banner-label { font-size: 0.7rem;font-weight: 700;text-transform: uppercase;color: #eab308; }
+        .banner-content { flex: 1;font-size: 1.1rem; }
+        .banner-edit { background: #eab30830;border: 1px solid #eab30850;color: #eab308;padding: 10px 20px;border-radius: 8px;cursor: pointer;transition: all 0.2s; }
+        .banner-edit:hover { transform: scale(1.05); }
+        .card { background: var(--glass-bg);backdrop-filter: blur(20px);border: 1px solid var(--glass-border);border-radius: 20px;padding: 24px;transition: all 0.4s cubic-bezier(0.4,0,0.2,1); }
+        .card:hover { transform: translateY(-8px);box-shadow: var(--glow-hover); }
+        .card-header { display: flex;justify-content: space-between;align-items: center;margin-bottom: 16px; }
+        .card-title { font-size: 0.75rem;font-weight: 600;text-transform: uppercase;letter-spacing: 1px;color: var(--text-secondary); }
+        .card-badge { padding: 4px 10px;border-radius: 20px;font-size: 0.7rem;font-weight: 600;background: var(--accent-purple);color: white; }
+        .grid { display: grid;grid-template-columns: repeat(auto-fit,minmax(340px,1fr));gap: 24px;margin-bottom: 28px; }
+        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; }.sidebar{display:none}.main{margin-left:0;padding:16px} }
+        .loading { display: flex;align-items: center;justify-content: center;padding: 40px;color: var(--text-secondary); }
+        .spinner { width: 24px;height: 24px;border: 2px solid var(--glass-border);border-top-color: var(--accent-purple);border-radius: 50%;animation: spin 1s linear infinite;margin-right: 12px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .weather-temp { font-size: 4rem;font-weight: 700;background: linear-gradient(135deg,#fff,#06b6d4);-webkit-background-clip: text;-webkit-text-fill-color: transparent; }
+        .weather-forecast { display: flex;justify-content: space-around;margin-top: 20px;padding-top: 16px;border-top: 1px solid var(--glass-border); }
         .forecast-day { text-align: center; }
-        .forecast-day-name {
-            font-size: 0.75rem; color: var(--text-secondary);
-            text-transform: uppercase;
-        }
-        .forecast-temp {
-            font-size: 1.2rem; font-weight: 600;
-            margin-top: 4px;
-        }
-
-        /* Tasks Widget with Drag */
-        .task-list {
-            display: flex; flex-direction: column; gap: 10px;
-        }
-        .task-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 14px; background: rgba(255,255,255,0.03);
-            border-radius: 12px;
-            cursor: grab;
-            transition: all 0.2s ease;
-            border: 2px solid transparent;
-        }
-        .task-item:hover { 
-            background: rgba(255,255,255,0.06);
-            border-color: rgba(139, 92, 246, 0.2);
-        }
-        .task-item.dragging {
-            opacity: 0.5;
-            transform: scale(1.02);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        .task-item.drag-over {
-            border-color: var(--accent-purple);
-            transform: translateY(4px);
-        }
-        .task-checkbox {
-            width: 20px; height: 20px; accent-color: var(--accent-purple);
-            cursor: pointer;
-        }
-        .task-content { flex: 1; }
-        .task-title { font-size: 0.95rem; font-weight: 500; }
-        .task-title.done { 
-            text-decoration: line-through; 
-            color: var(--text-secondary);
-        }
-        .task-meta {
-            font-size: 0.75rem; color: var(--text-secondary);
-            margin-top: 2px;
-        }
-        .task-delete {
-            opacity: 0; transition: opacity 0.2s;
-            background: none; border: none; color: var(--text-secondary);
-            cursor: pointer; font-size: 1.2rem;
-        }
-        .task-item:hover .task-delete { opacity: 1; }
-        .task-delete:hover { color: #ef4444; }
-
-        /* Gmail Widget */
-        .gmail-card {
-            position: relative;
-        }
-        .gmail-item {
-            padding: 16px; margin-bottom: 10px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 12px;
-            border-left: 3px solid transparent;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-        .gmail-item:hover {
-            background: rgba(255,255,255,0.05);
-            transform: translateX(4px);
-        }
-        .gmail-item.action {
-            border-left-color: var(--accent-purple);
-            background: linear-gradient(90deg, rgba(139,92,246,0.1), transparent);
-        }
-        .gmail-header {
-            display: flex; justify-content: space-between; align-items: flex-start;
-            margin-bottom: 6px;
-        }
-        .gmail-subject {
-            font-weight: 600; font-size: 0.95rem;
-            display: -webkit-box; -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical; overflow: hidden;
-        }
-        .gmail-time {
-            font-size: 0.75rem; color: var(--text-secondary);
-            white-space: nowrap;
-        }
-        .gmail-sender {
-            font-size: 0.85rem; color: var(--text-secondary);
-            margin-bottom: 6px;
-        }
-        .gmail-preview {
-            font-size: 0.8rem; color: var(--text-secondary);
-            display: -webkit-box; -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical; overflow: hidden;
-            line-height: 1.4;
-        }
-        .gmail-actions {
-            display: flex; gap: 8px; margin-top: 12px;
-            opacity: 0; transform: translateY(8px);
-            transition: all 0.2s ease;
-        }
-        .gmail-item:hover .gmail-actions {
-            opacity: 1; transform: translateY(0);
-        }
-        .btn-sm {
-            padding: 6px 12px; border-radius: 8px;
-            font-size: 0.75rem; font-weight: 500;
-            cursor: pointer; border: none;
-            transition: all 0.2s ease;
-        }
-        .btn-primary-sm {
-            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
-            color: white;
-        }
-        .btn-secondary-sm {
-            background: rgba(255,255,255,0.1);
-            color: var(--text-primary);
-        }
-        .btn-sm:hover { transform: translateY(-2px); }
-
-        /* Calendar Widget */
-        .calendar-widget iframe {
-            width: 100%; height: 320px; border: none;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.02);
-        }
-
-        /* System Status */
-        .status-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-        }
-        @media (max-width: 768px) {
-            .status-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        .status-item {
-            display: flex; align-items: center; gap:/* Status Grid */
-.status-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
-}
-.status-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 16px; background: rgba(255,255,255,0.03);
-    border-radius: 12px; transition: all 0.2s ease;
-}
-.status-item:hover { background: rgba(255,255,255,0.05); }
-.status-icon {
-    width: 40px; height: 40px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.3rem; background: rgba(34,197,94,0.15);
-}
-.status-text { flex: 1; }
-.status-label { font-weight: 600; font-size: 0.85rem; }
-.status-value { font-size: 0.75rem; color: var(--text-secondary); }
-
-/* Mobile Bottom Nav */
-@media (max-width: 768px) {
-    .sidebar { display: none !important; }
-    .main { margin-left: 0 !important; padding: 16px; }
-    .mobile-nav {
-        position: fixed; bottom: 0; left: 0; right: 0;
-        background: var(--bg-secondary); border-top: 1px solid var(--glass-border);
-        display: flex; justify-content: space-around; padding: 12px;
-        z-index: 100;
-    }
-    .mobile-nav-item {
-        display: flex; flex-direction: column; align-items: center;
-        gap: 4px; color: var(--text-secondary); font-size: 0.7rem;
-        cursor: pointer; padding: 8px 16px; border-radius: 8px;
-    }
-    .mobile-nav-item.active { color: var(--accent-purple); }
-}
-@media (min-width: 769px) { .mobile-nav { display: none; } }
+        .forecast-day-name { font-size: 0.75rem;color: var(--text-secondary);text-transform: uppercase; }
+        .forecast-temp { font-size: 1.1rem;font-weight: 600;margin-top: 4px; }
+        .task-item { display: flex;align-items: center;gap: 12px;padding: 14px;background: #ffffff08;border-radius: 12px;cursor: grab;margin-bottom: 8px;transition: all 0.3s ease; }
+        .task-item:hover { background: #ffffff10; }
+        .task-item.dragging { opacity: 0.5;transform: scale(1.02); }
+        .task-item.done .task-title { text-decoration: line-through;color: var(--text-secondary); }
+        .task-meta { font-size: 0.75rem;color: var(--text-secondary);margin-left: auto; }
+        .gmail-item { padding: 16px;background: #ffffff05;border-radius: 12px;border-left: 3px solid transparent;margin-bottom: 10px;transition: all 0.2s ease; }
+        .gmail-item:hover { background: #ffffff08;transform: translateX(4px); }
+        .gmail-item.action { border-left-color: var(--accent-purple);background: linear-gradient(90deg,#8b5cf620,transparent); }
+        .gmail-subject { font-weight: 600;font-size: 0.95rem; }
+        .gmail-sender { font-size: 0.85rem;color: var(--text-secondary);margin-top: 4px; }
+        .gmail-preview { font-size: 0.8rem;color: var(--text-secondary);margin-top: 6px;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden; }
+        .gmail-actions { display: flex;gap: 8px;margin-top: 12px; }
+        .btn { padding: 8px 16px;border-radius: 8px;font-size: 0.8rem;font-weight: 500;cursor: pointer;border: none;transition: all 0.2s; }
+        .btn-primary { background: linear-gradient(135deg,var(--accent-purple),var(--accent-pink));color: white; }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-secondary { background: #ffffff10;color: var(--text-primary); }
+        .error-msg { padding:16px;color: #ef4444;font-size: 0.9rem;text-align: center; }
+        .last-updated { font-size: 0.7rem;color: var(--text-secondary);text-align: right;margin-top: 8px; }
     </style>
 </head>
 <body>
@@ -478,208 +83,300 @@
     <div class="app">
         <aside class="sidebar">
             <div class="logo">🦾</div>
-            <nav class="nav">
-                <div class="nav-item active" data-tab="dashboard"><span class="nav-icon">🏠</span><span class="nav-label">Dashboard</span></div>
-                <div class="nav-item" data-tab="gmail"><span class="nav-icon">📧</span><span class="nav-label">Gmail</span></div>
-                <div class="nav-item" data-tab="calendar"><span class="nav-icon">📅</span><span class="nav-label">Calendar</span></div>
-                <div class="nav-item" data-tab="tasks"><span class="nav-icon">✅</span><span class="nav-label">Tasks</span></div>
-                <div class="nav-item" data-tab="settings"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></div>
+            <nav>
+                <div class="nav-item active"><span>🏠</span><span class="nav-label">Dashboard</span></div>
+                <div class="nav-item"><span>📧</span><span class="nav-label">Gmail</span></div>
+                <div class="nav-item"><span>📅</span><span class="nav-label">Calendar</span></div>
+                <div class="nav-item"><span>✅</span><span class="nav-label">Tasks</span></div>
             </nav>
         </aside>
         
         <main class="main">
             <header class="header">
-                <h1 class="header-title">Answer Control</h1>
-                <div class="header-meta">
-                    <div class="status-dot"></div>
-                    <span>All systems operational</span>
+                <h1>Answer Control</h1>
+                <div class="live-badge">
+                    <span class="live-dot"></span>
+                    <span>LIVE DATA</span>
                 </div>
             </header>
             
-            <div class="banner" id="one-thing-banner">
+            <div class="banner">
                 <span class="banner-label">Today's One Thing</span>
-                <span class="banner-content" id="one-thing-text">Research BOX API for automation</span>
+                <span class="banner-content" id="one-thing">Loading...</span>
                 <button class="banner-edit" onclick="editOneThing()">Edit</button>
             </div>
             
-            <div class="grid" id="widget-grid">
-                <!-- Widgets rendered here -->
-            </div>
-            
-            <div class="card" style="margin-bottom: 100px;">
-                <div class="card-header">
-                    <span class="card-title">System Status</span>
-                    <span class="card-badge">Live</span>
-                </div>
-                <div class="status-grid" id="status-grid"></div>
-            </div>
-        </main>
-    </div>
-    
-    <nav class="mobile-nav">
-        <div class="mobile-nav-item active" data-tab="dashboard"><span>🏠</span><span>Home</span></div>
-        <div class="mobile-nav-item" data-tab="gmail"><span>📧</span><span>Gmail</span></div>
-        <div class="mobile-nav-item" data-tab="tasks"><span>✅</span><span>Tasks</span></div>
-        <div class="mobile-nav-item" data-tab="calendar"><span>📅</span><span>Calendar</span></div>
-    </nav>
-
-    <script>
-        // Data
-        const data = {
-            weather: { temp: 72, condition: 'Clear', location: 'Dallas, TX', forecast: [
-                { day: 'Thu', temp: '74°' }, { day: 'Fri', temp: '76°' }, { day: 'Sat', temp: '73°' }
-            ]},
-            tasks: [
-                { id: 1, title: 'Research BOX API', done: false, priority: 'high', source: 'Personal' },
-                { id: 2, title: 'Schedule structural engineer', done: false, priority: 'medium', source: 'Home' },
-                { id: 3, title: 'Shop home insurance', done: false, priority: 'low', source: 'Finance' }
-            ],
-            gmail: [
-                { id: 'eb7891', subject: 'FW: Everbright order for Simplicity Solar', sender: 'Everbright Systems', preview: 'Please find the attached invoice for your recent order. Terms: Net 30.', time: '2h ago', isAction: true },
-                { id: 'q1pricing', subject: 'Q1 pricing update - Bright Energy', sender: 'Bright Energy', preview: 'Updated pricing for Q1 2026. See attached spreadsheet.', time: '4h ago', isAction: true }
-            ],
-            systems: [
-                { name: 'Gmail Classifier', status: 'Running', icon: '✅' },
-                { name: 'BOX Detector', status: 'Daily 6 PM', icon: '📁' },
-                { name: 'Morning Brief', status: '6 AM daily', icon: '🌅' },
-                { name: 'Overnight Thinking', status: '2 AM → 7 AM', icon: '🧠' }
-            ]
-        };
-
-        // Render Functions
-        function renderWidgets() {
-            const grid = document.getElementById('widget-grid');
-            grid.innerHTML = `
-                <div class="card weather-card">
+            <div class="grid">
+                <!-- Weather Card -->
+                <div class="card">
                     <div class="card-header">
-                        <span class="card-title">${'☀️ Weather'}</span>
+                        <span class="card-title">☀️ Weather</span>
+                        <span class="card-badge" id="weather-badge">LIVE</span>
                     </div>
-                    <div class="weather-main">
-                        <div class="weather-temp">${data.weather.temp}°</div>
-                        <div class="weather-desc">${data.weather.condition}</div>
-                        <div class="weather-location">${data.weather.location}</div>
+                    <div id="weather-content">
+                        <div class="loading"><div class="spinner"></div>Fetching Dallas weather...</div>
                     </div>
-                    <div class="weather-forecast">
-                        ${data.weather.forecast.map(f => `
-                            <div class="forecast-day">
-                                <div class="forecast-day-name">${f.day}</div>
-                                <div class="forecast-temp">${f.temp}</div>
-                            </div>
-                        `).join('')}
-                    </div>
+                    <div class="last-updated" id="weather-updated"></div>
                 </div>
-
+                
+                <!-- Tasks Card -->
                 <div class="card">
                     <div class="card-header">
                         <span class="card-title">✅ Tasks</span>
-                        <span class="card-badge">${data.tasks.filter(t => !t.done).length}</span>
+                        <span class="card-badge" id="task-count">--</span>
                     </div>
-                    <div class="task-list" id="task-list">
-                        ${data.tasks.map(t => renderTask(t)).join('')}
+                    <div id="tasks-content">
+                        <div class="loading"><div class="spinner"></div>Loading tasks...</div>
                     </div>
+                    <div class="last-updated" id="tasks-updated"></div>
                 </div>
-
-                <div class="card gmail-card">
+                
+                <!-- Gmail Card -->
+                <div class="card">
                     <div class="card-header">
                         <span class="card-title">📧 Recent Emails</span>
-                        <span class="card-badge" style="background:rgba(239,68,68,0.2);color:#ef4444;">${data.gmail.length}</span>
+                        <span class="card-badge" id="email-count">--</span>
                     </div>
-                    <div id="gmail-list">
-                        ${data.gmail.map(e => renderGmail(e)).join('')}
+                    <div id="gmail-content">
+                        <div class="loading"><div class="spinner"></div>Loading emails...</div>
                     </div>
+                    <div class="last-updated" id="gmail-updated"></div>
                 </div>
-
+                
+                <!-- Calendar Card -->
                 <div class="card">
                     <div class="card-header">
                         <span class="card-title">📅 Calendar</span>
+                        <span class="card-badge">LIVE</span>
                     </div>
-                    <div class="calendar-widget">
-                        <iframe src="https://calendar.google.com/calendar/embed?src=meseeksingram%40gmail.com&ctz=America%2FChicago&mode=AGENDA&showCalendars=0&showPrint=0&showTabs=0&showTz=0&showTitle=0" 
-                                style="background:transparent;">
-                        </iframe>
-                    </div>
+                    <iframe src="https://calendar.google.com/calendar/embed?src=meseeksingram%40gmail.com&ctz=America%2FChicago&mode=AGENDA&showCalendars=0&showPrint=0&showTabs=0&showTz=0&showTitle=0" style="width:100%;height:280px;border:none;border-radius:12px;background:transparent;"></iframe>
                 </div>
-            `;
-        }
+            </div>
+        </main>
+    </div>
 
-        function renderTask(task) {
-            return `
-                <div class="task-item" draggable="true" data-id="${task.id}">
-                    <input type="checkbox" class="task-checkbox" ${task.done ? 'checked' : ''} 
-                           onchange="toggleTask(${task.id})">
-                    <div class="task-content">
-                        <div class="task-title ${task.done ? 'done' : ''}">${escapeHTML(task.title)}</div>
-                        <div class="task-meta">${task.source} • ${task.priority}</div>
+    <script>
+        // Live Data Dashboard v4
+        const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:5000' : '';
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadOneThing();
+            loadWeather();
+            loadTasks();
+            loadGmail();
+            
+            // Auto-refresh every 5 minutes
+            setInterval(() => {
+                loadWeather();
+                loadGmail();
+            }, 300000);
+        });
+        
+        // ========== TODAY'S ONE THING ==========
+        function loadOneThing() {
+            const saved = localStorage.getItem('kyle_today_onething');
+            document.getElementById('one-thing').textContent = saved || 'Research BOX API for automation';
+        }
+        
+        function editOneThing() {
+            const current = document.getElementById('one-thing').textContent;
+            const updated = prompt("Today's One Thing:", current);
+            if (updated) {
+                document.getElementById('one-thing').textContent = updated;
+                localStorage.setItem('kyle_today_onething', updated);
+            }
+        }
+        
+        // ========== WEATHER (Open-Meteo - Free, No Key) ==========
+        async function loadWeather() {
+            try {
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=32.78&longitude=-96.81&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=America%2FChicago');
+                const data = await res.json();
+                
+                const current = data.current;
+                const daily = data.daily;
+                
+                // Render
+                document.getElementById('weather-content').innerHTML = `
+                    <div style="text-align:center;padding:10px 0;">
+                        <div class="weather-temp">${Math.round(current.temperature_2m)}°</div>
+                        <div style="color:var(--text-secondary);margin-top:8px;font-size:1.1rem;">${getWeatherDesc(current.weather_code)}</div>
+                        <div style="color:var(--text-secondary);font-size:0.9rem;margin-top:4px;">Dallas, TX</div>
+                        <div class="weather-forecast">
+                            ${daily.time.slice(1, 4).map((t, i) => {
+                                const date = new Date(t);
+                                const dayName = date.toLocaleDateString('en-US', {weekday: 'short'});
+                                return `
+                                    <div class="forecast-day">
+                                        <div class="forecast-day-name">${dayName}</div>
+                                        <div class="forecast-temp">${Math.round(daily.temperature_2m_max[i+1])}°</div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
                     </div>
-                    <button class="task-delete" onclick="deleteTask(${task.id})">🗑️</button>
+                `;
+                document.getElementById('weather-updated').textContent = 'Updated ' + formatTime(new Date());
+            } catch (e) {
+                document.getElementById('weather-content').innerHTML = `
+                    <div class="error-msg">Weather unavailable</div>
+                `;
+            }
+        }
+        
+        function getWeatherDesc(code) {
+            const codes = {
+                0: 'Clear', 1: 'Mostly Clear', 2: 'Partly Cloudy', 3: 'Cloudy',
+                45: 'Foggy', 48: 'Foggy', 51: 'Light Rain', 53: 'Rain', 55: 'Heavy Rain',
+                61: 'Drizzle', 63: 'Rain', 65: 'Heavy Rain', 71: 'Snow', 73: 'Snow',
+                75: 'Heavy Snow', 80: 'Showers', 81: 'Heavy Showers', 82: 'Storm',
+                95: 'Thunderstorm', 96: 'Thunderstorm', 99: 'Severe Storm'
+            };
+            return codes[code] || 'Unknown';
+        }
+        
+        // ========== TASKS (from localStorage or API) ==========
+        function loadTasks() {
+            const saved = localStorage.getItem('dashboard_tasks');
+            let tasks = saved ? JSON.parse(saved) : getDefaultTasks();
+            
+            renderTasks(tasks);
+            document.getElementById('task-count').textContent = tasks.filter(t => !t.done).length;
+            document.getElementById('tasks-updated').textContent = 'Synced ' + formatTime(new Date());
+        }
+        
+        function getDefaultTasks() {
+            return [
+                { id: 1, title: 'Research BOX API', done: false, priority: 'high', source: 'Personal' },
+                { id: 2, title: 'Schedule structural engineer', done: false, priority: 'medium', source: 'Home' },
+                { id: 3, title: 'Shop home insurance', done: false, priority: 'low', source: 'Finance' }
+            ];
+        }
+        
+        function renderTasks(tasks) {
+            const html = tasks.map(t => `
+                <div class="task-item ${t.done ? 'done' : ''}" draggable="true" data-id="${t.id}">
+                    <input type="checkbox" class="task-checkbox" ${t.done ? 'checked' : ''} 
+                           onchange="toggleTask(${t.id})" style="accent-color:var(--accent-purple);width:18px;height:18px;">
+                    <span class="task-title" style="flex:1;${t.done ? 'text-decoration:line-through;color:var(--text-secondary);' : ''}">${escapeHtml(t.title)}</span>
+                    <span class="task-meta">${t.source}</span>
                 </div>
-            `;
+            `).join('');
+            
+            document.getElementById('tasks-content').innerHTML = html;
+            initDragDrop();
         }
-
-        function renderGmail(email) {
-            return `
-                <div class="gmail-item ${email.isAction ? 'action' : ''}">
-                    <div class="gmail-header">
-                        <div class="gmail-subject">${escapeHTML(email.subject)}</div>
-                        <span class="gmail-time">${email.time}</span>
-                    </div>
-                    <div class="gmail-sender">${escapeHTML(email.sender)}</div>
-                    <div class="gmail-preview">${escapeHTML(email.preview)}</div>
+        
+        function toggleTask(id) {
+            let tasks = JSON.parse(localStorage.getItem('dashboard_tasks') || '[]');
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.done = !task.done;
+                localStorage.setItem('dashboard_tasks', JSON.stringify(tasks));
+                loadTasks();
+            }
+        }
+        
+        // ========== GMAIL (from localStorage - populated by classifier) ==========
+        function loadGmail() {
+            const saved = localStorage.getItem('kyleEmailThreads');
+            let emails = saved ? JSON.parse(saved) : getSampleEmails();
+            
+            // Filter to last 5, sort by newest
+            emails = emails.slice(0, 5);
+            
+            renderGmail(emails);
+            document.getElementById('email-count').textContent = emails.filter(e => e.isAction).length;
+            document.getElementById('gmail-updated').textContent = 'Synced ' + formatTime(new Date());
+        }
+        
+        function getSampleEmails() {
+            return [
+                { id: 'eb7891', subject: 'FW: Everbright order for Simplicity Solar', sender: 'Everbright Systems', preview: 'Invoice attached for Simplicity Solar order. Terms: Net 30.', time: '2h ago', isAction: true },
+                { id: 'q1pricing', subject: 'Q1 pricing update - Bright Energy', sender: 'Bright Energy', preview: 'Updated Q1 2026 pricing sheet attached.', time: '4h ago', isAction: true }
+            ];
+        }
+        
+        function renderGmail(emails) {
+            const html = emails.map(e => `
+                <div class="gmail-item ${e.isAction ? 'action' : ''}">
+                    <div class="gmail-subject">${escapeHtml(e.subject)}</div>
+                    <div class="gmail-sender">${escapeHtml(e.sender)} ${e.isAction ? '<span style="color:var(--accent-purple);font-weight:600;">• ACTION</span>' : ''}</div>
+                    <div class="gmail-preview">${escapeHtml(e.preview)}</div>
                     <div class="gmail-actions">
-                        <button class="btn-sm btn-primary-sm" onclick="openGmail('${email.id}')">📧 Open</button>
-                        ${email.isAction ? `<button class="btn-sm btn-secondary-sm" onclick="createTask('${email.id}')">➕ Task</button>` : ''}
+                        <button class="btn btn-primary" onclick="openGmailThread('${e.id}')">📧 Open</button>
+                        ${e.isAction ? `<button class="btn btn-secondary" onclick="createTaskFromEmail('${e.id}')">➕ Task</button>` : ''}
                     </div>
                 </div>
-            `;
+            `).join('');
+            
+            document.getElementById('gmail-content').innerHTML = html || '<div style="padding:20px;text-align:center;color:var(--text-secondary);">No recent emails</div>';
         }
-
-        // Drag & Drop
+        
+        function openGmailThread(id) {
+            window.open(`https://mail.google.com/mail/u/0/#inbox/${id}`, '_blank');
+        }
+        
+        function createTaskFromEmail(id) {
+            alert(`Task created from email ${id} (sync to Google Tasks coming)`);
+        }
+        
+        // ========== DRAG & DROP ==========
         function initDragDrop() {
-            const list = document.getElementById('task-list');
+            const list = document.getElementById('tasks-content');
             if (!list) return;
             
-            let draggedItem = null;
+            let dragged = null;
             
             list.addEventListener('dragstart', e => {
                 if (e.target.classList.contains('task-item')) {
-                    draggedItem = e.target;
+                    dragged = e.target;
                     e.target.classList.add('dragging');
-                    e.dataTransfer.effectAllowed = 'move';
                 }
             });
             
             list.addEventListener('dragend', e => {
                 if (e.target.classList.contains('task-item')) {
                     e.target.classList.remove('dragging');
-                    document.querySelectorAll('.task-item').forEach(i => i.classList.remove('drag-over'));
+                    saveTaskOrder();
                 }
             });
             
             list.addEventListener('dragover', e => {
                 e.preventDefault();
-                const after = getDragAfter(list, e.clientY);
-                if (draggedItem && after) {
-                    after.classList.add('drag-over');
-                }
-            });
-            
-            list.addEventListener('drop', e => {
-                e.preventDefault();
-                const after = getDragAfter(list, e.clientY);
-                if (draggedItem) {
-                    if (after) list.insertBefore(draggedItem, after);
-                    else list.appendChild(draggedItem);
-                    saveTaskOrder();
+                const after = [...list.children].find(c => {
+                    const box = c.getBoundingClientRect();
+                    return e.clientY < box.top + box.height / 2;
+                });
+                if (dragged) {
+                    if (after) list.insertBefore(dragged, after);
+                    else list.appendChild(dragged);
                 }
             });
         }
-
-        function getDragAfter(container, y) {
-            const items = [...container.querySelectorAll('.task-item:not(.dragging)')];
-            return items.reduce((closest, child) => {
-                const box = child.getBoundingClientRect();
-                const offset = y - box.top - box.height / 2;
-                if (offset < 0 && offset > closest.offset) {
-                    return { offset, element: child };
-                }
-                return
+        
+        function saveTaskOrder() {
+            const items = document.querySelectorAll('.task-item');
+            let tasks = JSON.parse(localStorage.getItem('dashboard_tasks') || '[]');
+            const newOrder = [...items].map(item => {
+                const id = parseInt(item.dataset.id);
+                return tasks.find(t => t.id === id);
+            }).filter(Boolean);
+            localStorage.setItem('dashboard_tasks', JSON.stringify(newOrder));
+        }
+        
+        // ========== UTILS ==========
+        function formatTime(date) {
+            return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>
