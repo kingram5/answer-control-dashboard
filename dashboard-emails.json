@@ -1,0 +1,34 @@
+[
+  {
+    "id": "18e5a1f2b3c4",
+    "subject": "FW: Everbright order for Simplicity Solar",
+    "preview": "Invoice attached for Simplicity Solar order. Payment terms: Net 30. Please review and approve.",
+    "time": "Just now",
+    "isAction": true,
+    "classification": "FOR_KYLE"
+  },
+  {
+    "id": "17d4c9e8a7b6",
+    "subject": "Q1 pricing update - Bright Energy",
+    "preview": "Updated Q1 2026 pricing sheet attached. Review before next order.",
+    "time": "2h ago", 
+    "isAction": true,
+    "classification": "FOR_KYLE"
+  },
+  {
+    "id": "16c3b8d7f5e4",
+    "subject": "Library fine notice",
+    "preview": "Your checked out items are overdue. Please return or renew.",
+    "time": "5h ago",
+    "isAction": false,
+    "classification": "SKIPPED_NOT_ACTION"
+  },
+  {
+    "id": "15a2c6b8d9f7",
+    "subject": "Newsletter: Solar industry trends",
+    "preview": "Weekly industry update. Solar adoption up 15% in Q4.",
+    "time": "8h ago",
+    "isAction": false,
+    "classification": "SKIPPED_NOT_ACTION"
+  }
+]
