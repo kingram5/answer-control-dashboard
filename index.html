@@ -278,10 +278,17 @@
             }
         }
         
-        // ========== GMAIL (from localStorage - populated by classifier) ==========
-        function loadGmail() {
-            const saved = localStorage.getItem('kyleEmailThreads');
-            let emails = saved ? JSON.parse(saved) : getSampleEmails();
+        // ========== GMAIL (fetch from classifier JSON) ==========
+        async function loadGmail() {
+            let emails = [];
+            try {
+                const res = await fetch('dashboard-emails.json?_=' + Date.now());
+                emails = await res.json();
+            } catch (e) {
+                // Fallback to localStorage if fetch fails
+                const saved = localStorage.getItem('kyleEmailThreads');
+                emails = saved ? JSON.parse(saved) : getSampleEmails();
+            }
             
             // Filter to last 5, sort by newest
             emails = emails.slice(0, 5);
@@ -302,7 +309,7 @@
             const html = emails.map(e => `
                 <div class="gmail-item ${e.isAction ? 'action' : ''}">
                     <div class="gmail-subject">${escapeHtml(e.subject)}</div>
-                    <div class="gmail-sender">${escapeHtml(e.sender)} ${e.isAction ? '<span style="color:var(--accent-purple);font-weight:600;">• ACTION</span>' : ''}</div>
+                    <div class="gmail-sender">${escapeHtml(e.classification || 'Email')} ${e.isAction ? '<span style="color:var(--accent-purple);font-weight:600;">• ACTION</span>' : ''}</div>
                     <div class="gmail-preview">${escapeHtml(e.preview)}</div>
                     <div class="gmail-actions">
                         <button class="btn btn-primary" onclick="openGmailThread('${e.id}')">📧 Open</button>
